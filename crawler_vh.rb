@@ -1,7 +1,11 @@
-# ИЗВЛЕЧЕНИЕ ИНФОРМАЦИИ ИЗ МНОЖЕСТВА WEB-СТРАНИЦ
-
+# *** ИЗВЛЕЧЕНИЕ ИНФОРМАЦИИ ИЗ МНОЖЕСТВА WEB-СТРАНИЦ ***
 require "net/http"
 require "uri"
+
+# стартовый идентификатор страницы
+START_ID = 700
+# сколько страниц следует рассмотреть
+STEP = 100
 
 # получение ответа от целевой страницы
 def get_responce(id)
@@ -51,16 +55,12 @@ def extract_activity(text)
 	text =~ /#{"Рубрики".force_encoding('ASCII-8BIT')}:<\/div> *?<div class="info_value">(.*?)[,<]/ ? Regexp.last_match[1] : nil
 end
 
-# стартовый идентификатор страницы
-start_id = 700
-# сколько страниц следует рассмотреть
-step = 100
 
-end_id = start_id + step
+end_id = START_ID + STEP
 # результат сохраняется в поддиректорию /results
 Dir.mkdir('results') unless Dir.exist?('results')
-input = File.open("results/res-vh-#{start_id}-#{end_id}.txt", "w")
-(start_id..end_id).each do |id|
+input = File.open("results/res-vh-#{START_ID}-#{end_id}.txt", "w")
+(START_ID..end_id).each do |id|
 	responce = get_responce(id)
 	# если страница существует, она анализируется
 	if responce.code == '200'
